@@ -1,12 +1,17 @@
-﻿using UnityEditor;
+﻿using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class Player : BaseMonoBehaviour
 {
     protected PlayerControl playerControl;
 
+    protected List<GameObject> listPerson = new List<GameObject>();
+
+    int number = 0;
     private void Awake()
     {
+        listPerson.Clear();
         playerControl = CptUtil.AddCpt<PlayerControl>(gameObject);
     }
 
@@ -19,9 +24,11 @@ public class Player : BaseMonoBehaviour
         }
     }
 
-    public void HandleForAddPerson(GameObject gameObject)
+    public void HandleForAddPerson(GameObject objPersonBuilding)
     {
-        BuildingPerson buildingPerson = gameObject.GetComponent<BuildingPerson>();
+        BuildingPerson buildingPerson = objPersonBuilding.GetComponent<BuildingPerson>();
+        number++;
+        PersonHandler.Instance.SetPersonNumber(gameObject, number);
     }
 
 }

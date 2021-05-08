@@ -10,4 +10,5 @@ public class TagInfo
 
     public readonly static string Tag_Player = "Player";
     public readonly static string Tag_Person= "Person";
+    public readonly static string Tag_PersonContainer = "PersonContainer";
 }
