@@ -4,37 +4,27 @@ using DG.Tweening;
 public class PersonHandler : BaseHandler<PersonHandler, PersonManager>
 {
 
-    public void SetPersonNumber(GameObject objParent, int totalNumber)
+    public void SetPersonNumber(int totalNumber)
     {
         PersonInfoBean personInfo = manager.GetRandomPersonInfoByNumber(totalNumber);
-        SetPersonNumber(objParent, personInfo);
+        SetPersonNumber(personInfo);
     }
 
-    public void SetPersonNumber(GameObject objParent, PersonInfoBean personInfo)
+    public void SetPersonNumber(PersonInfoBean personInfo)
     {
         PersonDetailsBean personDetails = personInfo.GetPersonDetilas();
-        Transform tfPersonContainer = objParent.transform.Find(TagInfo.Tag_PersonContainer);
-        if (tfPersonContainer == null)
+        if (manager.personContainer.transform.childCount < personInfo.person_number)
         {
-            GameObject obj = new GameObject();
-            obj.tag = TagInfo.Tag_PersonContainer;
-            obj.name = TagInfo.Tag_PersonContainer;
-            obj.transform.position = new Vector3(0, 0, 0);
-            obj.transform.SetParent(objParent.transform);
-            tfPersonContainer = obj.transform;
-        }
-        if (tfPersonContainer.childCount < personInfo.person_number)
-        {
-            int offsetNumber = personInfo.person_number - tfPersonContainer.childCount;
+            int offsetNumber = personInfo.person_number - manager.personContainer.transform.childCount;
             for (int i = 0; i < offsetNumber; i++)
             {
-                GameObject objPerson = manager.GetPersonModel("Person");
-                Instantiate(tfPersonContainer.gameObject, objPerson);
+                GameObject objPersonModel = manager.GetPersonModel("Person");
+                GameObject objPerson= Instantiate(manager.personContainer, objPersonModel);
             }
         }
-        for (int i = 0; i < tfPersonContainer.childCount; i++)
+        for (int i = 0; i < manager.personContainer.transform.childCount; i++)
         {
-            Transform tfChild = tfPersonContainer.transform.GetChild(i);
+            Transform tfChild = manager.personContainer.transform.GetChild(i);
             if (i >= personInfo.person_number)
             {
 #if UNITY_EDITOR
@@ -42,20 +32,26 @@ public class PersonHandler : BaseHandler<PersonHandler, PersonManager>
 #else
                 Destroy(tfChild.gameObject);
 #endif
+                i--;
             }
             else
             {
                 PersonDetailsItemBean personDetailsItem = personDetails.listPersonData[i];
-
+                Person person = CptUtil.AddCpt<Person>(tfChild.gameObject,out bool isNew);
+                if (isNew)
+                {
+                    manager.AddPerson(person);
+                }
+                person.SetData(personDetailsItem.position.GetVector3(), personDetailsItem.bufferTime, isNew);
                 if (Application.isPlaying)
                 {
-                    tfChild.DOLocalMove(personDetailsItem.position.GetVector3(), 0.5f);
+                    //tfChild.DOLocalMove(personDetailsItem.position.GetVector3(), 0.5f);
                     tfChild.DOScale(personDetailsItem.size.GetVector3(), 0.5f);
                     tfChild.DOLocalRotate(personDetailsItem.angle.GetVector3(), 0.5f);
                 }
                 else
                 {
-                    tfChild.localPosition = personDetailsItem.position.GetVector3();
+                    //tfChild.localPosition = personDetailsItem.position.GetVector3();
                     tfChild.localScale = personDetailsItem.size.GetVector3();
                     tfChild.localEulerAngles = personDetailsItem.angle.GetVector3();
                 }
@@ -64,6 +60,10 @@ public class PersonHandler : BaseHandler<PersonHandler, PersonManager>
                 for (int f = 0; f < listPartTF.Length; f++)
                 {
                     Transform tfItemPart = listPartTF[f];
+                    if (tfItemPart == tfChild)
+                    {
+                        continue;
+                    }
                     for (int p = 0; p < personDetailsItem.listPartData.Count; p++)
                     {
                         PersonDetailsItemPartBean personDetailsItemPart = personDetailsItem.listPartData[p];

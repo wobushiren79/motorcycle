@@ -20,7 +20,20 @@ public class CptUtil
         }
         return t;
     }
-
+    public static T AddCpt<T>(GameObject obj,out bool isNew) where T : Component
+    {
+        T t = obj.GetComponent<T>();
+        if (t == null)
+        {
+            isNew = true;
+            t = obj.AddComponent<T>();
+        }
+        else
+        {
+            isNew = false;
+        }
+        return t;
+    }
 
     /// <summary>
     /// 删除所有子物体

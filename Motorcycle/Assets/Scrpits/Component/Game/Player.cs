@@ -17,10 +17,14 @@ public class Player : BaseMonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag.Equals(TagInfo.Tag_Person))
+        if (other.gameObject.tag.Equals(TagInfo.Tag_BuildingPerson))
         {
             HandleForAddPerson(other.gameObject);
             Destroy(other.gameObject);
+        }
+        else if (other.gameObject.tag.Equals(TagInfo.Tag_BuildingEnd))
+        {
+            HandleForEnd();
         }
     }
 
@@ -28,7 +32,18 @@ public class Player : BaseMonoBehaviour
     {
         BuildingPerson buildingPerson = objPersonBuilding.GetComponent<BuildingPerson>();
         number++;
-        PersonHandler.Instance.SetPersonNumber(gameObject, number);
+        PersonHandler.Instance.SetPersonNumber(number);
+    }
+
+    public void HandleForEnd()
+    {
+        GameHandler.Instance.EndGame();
+    }
+
+    public void SubPerson()
+    {
+        number--;
+        PersonHandler.Instance.SetPersonNumber(number);
     }
 
 }

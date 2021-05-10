@@ -58,6 +58,11 @@ public class BuildingManager : BaseManager, IBuildingInfoView,ISceneInfoView
         }
     }
 
+    public void ClearAllBuilding()
+    {
+        CptUtil.RemoveChildsByActive(transform);
+    }
+
 
     public void GetBuildingInfoSuccess<T>(T data, Action<T> action)
     {

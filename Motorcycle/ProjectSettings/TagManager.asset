@@ -6,6 +6,10 @@ TagManager:
   tags:
   - Person
   - PersonContainer
+  - Obstacle
+  - BuildingPerson
+  - BuildingGround
+  - BuildingEnd
   layers:
   - Default
   - TransparentFX
@@ -15,10 +19,10 @@ TagManager:
   - UI
   - Person
   - Player
-  - 
-  - 
-  - 
-  - 
+  - Obstacle
+  - BuildingPerson
+  - BuildingGround
+  - BuildingEnd
   - 
   - 
   - 

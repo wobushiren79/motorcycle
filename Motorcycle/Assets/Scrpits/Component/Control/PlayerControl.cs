@@ -18,7 +18,7 @@ public class PlayerControl : BaseMonoBehaviour
     public void HandleForMove()
     {
         Player player = GameHandler.Instance.manager.player;
-        player.transform.Translate(Vector3.forward * Time.deltaTime * 2);
+        player.transform.Translate(Vector3.forward * Time.deltaTime * 5);
     }
 
     /// <summary>

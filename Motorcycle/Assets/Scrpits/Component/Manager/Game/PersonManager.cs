@@ -8,9 +8,11 @@ public class PersonManager : BaseManager, IPersonInfoView
     public Dictionary<int, List<PersonInfoBean>> dicPersonInfo = new Dictionary<int, List<PersonInfoBean>>();
     public Dictionary<string, GameObject> dicPersonModel = new Dictionary<string, GameObject>();
 
-    public List<GameObject> listPerson = new List<GameObject>();
+    public List<Person> listPerson = new List<Person>();
 
     protected PersonInfoController personInfoController;
+
+    public GameObject personContainer;
 
     private void Awake()
     {
@@ -19,6 +21,15 @@ public class PersonManager : BaseManager, IPersonInfoView
 
     public void InitData()
     {
+        if (personContainer == null)
+        {
+            personContainer = new GameObject();
+            personContainer.tag = TagInfo.Tag_PersonContainer;
+            personContainer.name = TagInfo.Tag_PersonContainer;
+            personContainer.transform.position = new Vector3(0, 0, 0);
+            personContainer.transform.SetParent(transform);
+        }
+
         personInfoController = new PersonInfoController(this, this);
         personInfoController.GetAllPersonInfoData(InitPersonInfo);
     }
@@ -69,6 +80,26 @@ public class PersonManager : BaseManager, IPersonInfoView
         return null;
     }
 
+    public void AddPerson(Person person)
+    {
+        listPerson.Add(person);
+    }
+
+    public void RemovePerson(Person person)
+    {
+        listPerson.Remove(person);
+    }
+
+    public void ClearAllPerson()
+    {
+        for (int i = 0; i < listPerson.Count; i++)
+        {
+            Person person = listPerson[i];
+            Destroy(person.gameObject);
+        }
+        listPerson.Clear();
+    }
+
     public GameObject GetPersonModel(string personName)
     {
         return GetModel(dicPersonModel, "game/person", personName, "Assets/Prefabs/Game/" + personName + ".prefab");
@@ -82,4 +113,5 @@ public class PersonManager : BaseManager, IPersonInfoView
     public void GetPersonInfoFail(string failMsg, Action action)
     {
     }
+
 }

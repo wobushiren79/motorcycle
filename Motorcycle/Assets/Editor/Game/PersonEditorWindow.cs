@@ -15,6 +15,7 @@ public class PersonEditorWindow : EditorWindow
     private void OnEnable()
     {
         personInfoService = new PersonInfoService();
+
         PersonHandler.Instance.manager.InitData();
     }
 
@@ -55,9 +56,8 @@ public class PersonEditorWindow : EditorWindow
 
     public void LoadPersonData()
     {
-        GameObject selectObj = Selection.activeObject as GameObject;
         PersonInfoBean personInfo = PersonHandler.Instance.manager.GetPersonInfoById(personId);
-        PersonHandler.Instance.SetPersonNumber(selectObj, personInfo);
+        PersonHandler.Instance.SetPersonNumber( personInfo);
     }
 
     public void SavePersonData()
@@ -67,19 +67,20 @@ public class PersonEditorWindow : EditorWindow
         personInfo.valid = 1;
 
         PersonDetailsBean personDetails = new PersonDetailsBean();
-        GameObject selectObj = Selection.activeObject as GameObject;
+
         int number = 0;
-        for (int i = 0; i < selectObj.transform.childCount; i++)
+        for (int i = 0; i < PersonHandler.Instance.manager.personContainer.transform.childCount; i++)
         {
-            Transform tfChild = selectObj.transform.GetChild(i);
-            if (!tfChild.tag.Equals(TagInfo.Tag_Player))
+            Transform tfChild = PersonHandler.Instance.manager.personContainer.transform.transform.GetChild(i);
+            Person itemPerson= tfChild.GetComponent<Person>();
+            if (!tfChild.tag.Equals(TagInfo.Tag_Person))
                 continue;
             //添加人
             PersonDetailsItemBean personDetailsItem = new PersonDetailsItemBean();
             personDetailsItem.position = new Vector3Bean(tfChild.localPosition);
             personDetailsItem.size = new Vector3Bean(tfChild.localScale);
             personDetailsItem.angle = new Vector3Bean(tfChild.localEulerAngles);
-
+            personDetailsItem.bufferTime = itemPerson.bufferTime;
             Transform[] tfListPart = tfChild.GetComponentsInChildren<Transform>();
             for (int f = 0; f < tfListPart.Length; f++)
             {
